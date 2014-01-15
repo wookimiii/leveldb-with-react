@@ -1,0 +1,22 @@
+{
+  "name": "leveldb-with-react",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Andrew Kim",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "level-live-stream": "~1.4.9",
+    "multilevel": "~5.5.0",
+    "engine.io-stream": "~0.4.3",
+    "level": "~0.18.0",
+    "browserify": "~3.20.0",
+    "envify": "~0.2.0",
+    "react": "~0.8.0",
+    "reactify": "~0.5.0"
+  }
+}
