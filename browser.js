@@ -10,35 +10,55 @@ con.pipe(db.createRpcStream()).pipe(con);
 
 window.db = db;
 
+var TodoItem = React.createClass({
+    render: function() {
+        return (
+            <li>{this.props.item.text} <a onClick={this.handleDelete}>{String.fromCharCode(8855)}</a></li>
+        );
+    },
+    handleDelete: function(e) {
+        console.log(this)
+        db.del(this.props.item.id);
+    }
+});
+
 var TodoList = React.createClass({
   render: function() {
-    var createItem = function(itemText) {
-      return <li>{itemText}</li>;
-    };
-    return <ul>{this.props.items.map(createItem)}</ul>;
+      function createItem(item) {
+          return  <TodoItem item={item} />
+      }
+      return <ul>{values(this.props.items).map(createItem)}</ul>;
   }
 });
 
+function values(obj) {
+    return Object.keys(obj).map(function (key) {
+        return obj[key];
+    });
+}
+
 var TodoApp = React.createClass({
   getInitialState: function() {
-    return {items: [], text: ''};
+    return {items: {}, text: ''};
   },
   onChange: function(e) {
     this.setState({text: e.target.value});
   },
   handleSubmit: function(e) {
     e.preventDefault();
-    db.put(Date.now(), {text: this.state.text});
+    var id = Date.now();
+    db.put(id, {id: id, text: this.state.text});
     this.setState({text: ''});
   },
   render: function() {
     return (
       <div>
+
         <h3>TODO</h3>
         <TodoList items={this.state.items} />
         <form onSubmit={this.handleSubmit}>
           <input onChange={this.onChange} value={this.state.text} />
-          <button>{'Add #' + (this.state.items.length + 1)}</button>
+          <button>{'Add #' + (Object.keys(this.state.items).length + 1)}</button>
         </form>
       </div>
     );
@@ -49,8 +69,18 @@ var app = TodoApp(null);
 window.app = app;
 React.renderComponent(window.app, document.body);
 
-db.createLiveStream().on('data', function(ch) {
+db.createLiveStream().on('data', function(change) {
+    console.log(change);
     var items = app.state.items;
-    items.push(ch.value.text);
+
+    // delete?
+    if (change.type == 'del') {
+        delete items[change.key];
+        app.setState({items: items});
+        return;
+    }
+
+    items[change.value.id] = change.value;
     app.setState({items: items});
 });
+
