@@ -1,4 +1,4 @@
-## LevelDB with React
+# LevelDB with React
 
 Inspired/copied from Julian Gruber's talk 
 * Video: http://www.youtube.com/watch?v=41oDDTRWjIQ
@@ -6,3 +6,10 @@ Inspired/copied from Julian Gruber's talk
 
 Building this to play with leveldb and react.
 
+## Usage
+````
+npm install
+npm start
+````
+
+then visit localhost:8000
